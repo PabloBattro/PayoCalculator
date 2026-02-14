@@ -32,10 +32,13 @@ function formatEta(etaDays: { min: number; max: number }): { eta: string; etaLab
   const eta = arrival.toISOString().split('T')[0];
 
   const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const MONTHS = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+  const SHORT_MONTHS = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ];
+
+  // Format: "Feb 18", "Mar 3" — short month + day (no leading zero)
+  const dateSuffix = `${SHORT_MONTHS[arrival.getMonth()]} ${arrival.getDate()}`;
 
   let etaLabel: string;
   if (etaDays.max === 0) {
@@ -43,9 +46,11 @@ function formatEta(etaDays: { min: number; max: number }): { eta: string; etaLab
   } else if (etaDays.max === 1) {
     etaLabel = 'Should arrive by tomorrow';
   } else if (etaDays.max <= 5) {
-    etaLabel = `Should arrive by ${DAYS[arrival.getDay()]}`;
+    // e.g. "Should arrive by Tuesday, Feb 18"
+    etaLabel = `Should arrive by ${DAYS[arrival.getDay()]}, ${dateSuffix}`;
   } else {
-    etaLabel = `Should arrive by ${MONTHS[arrival.getMonth()]} ${arrival.getDate()}`;
+    // e.g. "Should arrive by Feb 28"
+    etaLabel = `Should arrive by ${dateSuffix}`;
   }
 
   return { eta, etaLabel };

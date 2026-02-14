@@ -137,7 +137,7 @@ function FxBreakdown({
         type="button"
       >
         <span className="flex items-center gap-2">
-          <span className="w-4 text-center text-gray-300 font-light">−</span>
+          <span className="w-4 text-center text-gray-400 font-light">−</span>
           <span className="font-medium">
             {sendCfg.symbol}
             {fmt(quote.fee, sendCfg)}
@@ -196,7 +196,7 @@ function FxBreakdown({
       {/* Amount to convert */}
       <div className="flex items-center justify-between text-gray-600">
         <span className="flex items-center gap-2">
-          <span className="w-4 text-center text-gray-300 font-light">=</span>
+          <span className="w-4 text-center text-gray-400 font-light">=</span>
           <span className="font-medium">
             {sendCfg.symbol}
             {fmt(quote.amountToConvert, sendCfg)}
@@ -208,18 +208,20 @@ function FxBreakdown({
       {/* Exchange rate */}
       <div className="flex items-center justify-between text-gray-600">
         <span className="flex items-center gap-2">
-          <span className="w-4 text-center text-gray-300 font-light">×</span>
+          <span className="w-4 text-center text-gray-400 font-light">×</span>
           <span className="font-medium font-mono">
             {quote.exchangeRate.toFixed(4)}
           </span>
         </span>
         <span className="flex items-center gap-1.5 text-xs text-gray-500">
           Exchange rate
-          <span
-            className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gray-200 text-[9px] font-bold text-gray-500 cursor-help"
-            title={`Mid-market rate: ${quote.midMarketRate.toFixed(4)}`}
-          >
-            ?
+          {/* Tap-area wrapper (invisible p-2 adds ~44px touch target for mobile) */}
+          <span className="relative p-2 -m-2 cursor-help" title={`Mid-market rate: ${quote.midMarketRate.toFixed(4)}`}>
+            <span
+              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[11px] font-bold text-gray-500"
+            >
+              ?
+            </span>
           </span>
         </span>
       </div>
@@ -242,7 +244,7 @@ function LocalBreakdown({
     <div className="px-5 py-3.5 text-sm">
       <div className="flex items-center justify-between text-gray-600">
         <span className="flex items-center gap-2">
-          <span className="w-4 text-center text-gray-300 font-light">−</span>
+          <span className="w-4 text-center text-gray-400 font-light">−</span>
           <span className="font-medium">
             {quote.fee > 0
               ? `${sendCfg.symbol}${fmt(quote.fee, sendCfg)}`
@@ -271,7 +273,10 @@ export default function QuoteWidget() {
   const [method, setMethod] = useState<'bank_transfer' | 'p2p' | 'card'>('bank_transfer');
   const debounce = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const amount = direction === 'send' ? parseFloat(sendInput) : parseFloat(receiveInput);
+  // Strip thousand separators before parsing (inputs may contain commas after formatting)
+  const amount = direction === 'send'
+    ? parseFloat(sendInput.replace(/,/g, ''))
+    : parseFloat(receiveInput.replace(/,/g, ''));
 
   const fetchQuote = useCallback(async () => {
     if (!amount || amount <= 0) {
@@ -297,13 +302,13 @@ export default function QuoteWidget() {
       const data: QuoteResponse = await res.json();
       setQuote(data);
 
+      // Format BOTH inputs with thousand separators from the API response.
+      // The active (user-typed) field also gets formatted once the debounce fires,
+      // ensuring consistent display (e.g. "109809" → "109,809").
       const sendCfg = getCurrencyByCode(data.sendCurrency);
       const recvCfg = getCurrencyByCode(data.receiveCurrency);
-      if (direction === 'send') {
-        setReceiveInput(fmt(data.receiveAmount, recvCfg));
-      } else {
-        setSendInput(fmt(data.sendAmount, sendCfg));
-      }
+      setSendInput(fmt(data.sendAmount, sendCfg));
+      setReceiveInput(fmt(data.receiveAmount, recvCfg));
     } catch {
       setQuote(null);
     } finally {
@@ -486,6 +491,16 @@ export default function QuoteWidget() {
               </svg>
               <span className="text-sm">{quote.etaLabel}</span>
             </div>
+
+            {/* CTA — soft conversion, not hard-sell */}
+            <a
+              href="https://www.payoneer.com/signup/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-full rounded-xl bg-brand-coral px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg hover:shadow-brand-coral/20 active:scale-[0.98]"
+            >
+              Get started — it&apos;s free
+            </a>
 
             {/* Disclaimers */}
             <div className="space-y-1 px-1">

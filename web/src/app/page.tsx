@@ -47,7 +47,7 @@ export default function Home() {
             {/* Left — Copy */}
             <div className="max-w-lg">
               <div className="inline-flex items-center gap-2 rounded-full bg-brand-coral/10 px-3 py-1 text-xs font-semibold text-brand-coral mb-6">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-coral animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-coral" />
                 Indicative estimates
               </div>
 
