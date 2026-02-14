@@ -56,6 +56,8 @@ export interface CurrencyConfig {
   name: string;
   symbol: string;
   flag: string;
+  /** ISO 3166-1 alpha-2 country code (lowercase) — used for flagcdn.com images */
+  countryCode: string;
   decimals: number;
 }
 

@@ -5,6 +5,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { currencies } from '@/config/currencies';
 import type { CurrencyConfig } from '@/types/quote';
 
+// ---------------------------------------------------------------------------
+// Flag image from flagcdn.com — renders consistently on all platforms
+// ---------------------------------------------------------------------------
+
+function FlagIcon({ countryCode, size = 28 }: { countryCode: string; size?: number }) {
+  // flagcdn serves crisp PNGs; w80 gives us a 2× retina source for sizes up to 40px
+  const src = `https://flagcdn.com/w80/${countryCode}.png`;
+  return (
+    <img
+      src={src}
+      alt=""
+      width={size}
+      height={size}
+      loading="lazy"
+      className="h-full w-full object-cover"
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
+
 interface Props {
   value: string;
   onChange: (code: string) => void;
@@ -64,9 +85,9 @@ export default function CurrencyDropdown({ value, onChange, exclude }: Props) {
         className="flex items-center gap-2.5 rounded-full bg-gray-50 border border-gray-200 py-2 pl-2 pr-3 text-sm font-semibold text-gray-900 outline-none transition-all hover:bg-gray-100 hover:border-gray-300 focus:ring-2 focus:ring-brand-coral/30 cursor-pointer"
         type="button"
       >
-        {/* Circular flag container — mirrors the FX widget's flag circles */}
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-base leading-none overflow-hidden shrink-0">
-          {selected.flag}
+        {/* Circular flag — real image from flagcdn.com, consistent cross-platform */}
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 overflow-hidden shrink-0">
+          <FlagIcon countryCode={selected.countryCode} size={28} />
         </span>
         <span>{selected.code}</span>
         <motion.svg
@@ -143,9 +164,9 @@ export default function CurrencyDropdown({ value, onChange, exclude }: Props) {
                     }`}
                     type="button"
                   >
-                    {/* Circular flag — consistent with trigger pill */}
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-lg leading-none overflow-hidden shrink-0">
-                      {c.flag}
+                    {/* Circular flag — real image, consistent with trigger pill */}
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 overflow-hidden shrink-0">
+                      <FlagIcon countryCode={c.countryCode} size={32} />
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">

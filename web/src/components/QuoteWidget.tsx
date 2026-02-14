@@ -210,12 +210,6 @@ function FxBreakdown({
                   {fmt(quote.fee, sendCfg)} {sendCurrency}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span>FX markup included</span>
-                <span className="font-mono">
-                  ~{((1 - quote.exchangeRate / quote.midMarketRate) * 100).toFixed(2)}%
-                </span>
-              </div>
             </div>
           </motion.div>
         )}
@@ -244,7 +238,10 @@ function FxBreakdown({
         <span className="flex items-center gap-1.5 text-xs text-gray-500">
           Exchange rate
           {/* Tap-area wrapper (invisible p-2 adds ~44px touch target for mobile) */}
-          <span className="relative p-2 -m-2 cursor-help" title={`Mid-market rate: ${quote.midMarketRate.toFixed(4)}`}>
+          <span
+            className="relative p-2 -m-2 cursor-help"
+            title="Our exchange fees help cover the cost of exchanging uncommon currencies and the uncertainty of making exchanges while the market is closed. You can find out more in our fees page"
+          >
             <span
               className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[11px] font-bold text-gray-500"
             >
@@ -526,12 +523,12 @@ export default function QuoteWidget() {
               <span className="text-sm">{quote.etaLabel}</span>
             </div>
 
-            {/* CTA — proportions matched to internal FX widget's "Convert currencies" button */}
+            {/* CTA — violet gradient matching payoneer.com + internal FX widget */}
             <a
               href="https://www.payoneer.com/signup/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-full rounded-2xl bg-brand-coral px-4 py-3.5 text-[15px] font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg hover:shadow-brand-coral/20 active:scale-[0.98]"
+              className="flex items-center justify-center w-full rounded-2xl bg-gradient-to-r from-brand-violet-from to-brand-violet-to px-4 py-3.5 text-[15px] font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg hover:shadow-brand-violet-to/25 active:scale-[0.98]"
             >
               Get started — it&apos;s free
             </a>

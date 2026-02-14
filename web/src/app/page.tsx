@@ -33,7 +33,7 @@ export default function Home() {
             href="https://www.payoneer.com/signup/"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-brand-coral px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg hover:shadow-brand-coral/20 active:scale-[0.98]"
+            className="rounded-lg bg-gradient-to-r from-brand-violet-from to-brand-violet-to px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg hover:shadow-brand-violet-to/25 active:scale-[0.98]"
           >
             Get started
           </a>

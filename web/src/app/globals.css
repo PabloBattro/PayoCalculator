@@ -7,6 +7,9 @@
   --brand-ocean: #0070FF;
   --brand-dark: #252526;
   --brand-gray: #6B7280;
+  /* Violet gradient — CTA color matching payoneer.com + internal FX widget */
+  --brand-violet-from: #7C6AFF;
+  --brand-violet-to: #5B47E0;
 }
 
 @theme inline {
@@ -16,6 +19,8 @@
   --color-brand-ocean: var(--brand-ocean);
   --color-brand-dark: var(--brand-dark);
   --color-brand-gray: var(--brand-gray);
+  --color-brand-violet-from: var(--brand-violet-from);
+  --color-brand-violet-to: var(--brand-violet-to);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
