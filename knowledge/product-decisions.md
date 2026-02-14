@@ -44,8 +44,8 @@ No fee/FX rules hardcoded in the client. Prevents exposure of sensitive pricing 
    - "Rates/fees vary by route and payment details."
 
 ### Nice-to-Have (post-MVP)
-- Promo/threshold banner ("Sending over X? Lower fees apply")
-- Volume-based incentives
+- ~~Promo/threshold banner~~ → **Done** (volume discount hint at $10K USD equivalent)
+- ~~Volume-based incentives~~ → **Partially done** (hint banner; actual tiered pricing TBD)
 - Method-based upsell (compare Bank vs Payoneer-to-Payoneer vs Card)
 - Demand sensing (which routes users simulate most)
 
@@ -54,9 +54,11 @@ No fee/FX rules hardcoded in the client. Prevents exposure of sensitive pricing 
 - Clear, honest disclaimers
 - Goal: build trust, not overpromise
 
-## FX Rate Source (MVP)
-- Placeholder mid-rates + configurable FX markup to generate indicative rate
-- Later swap to real FX provider without changing UI contract
+## FX Rate Source
+- **Live**: Open Exchange Rates free tier (USD base, hourly updates, 1,000 req/month)
+- **Caching**: In-memory, 10-min TTL, lazy refresh (fetch only on demand)
+- **Fallback**: Live API → cached rates → static seed. Stale indicator shown in UI when serving fallback.
+- FX markup applied per corridor: 0.1–0.2% major, 0.4–0.5% mid-tier, 0.7–0.9% exotic
 
 ## Fee Display
 - Fees shown in **send currency only** (recommended for clarity)
@@ -65,7 +67,14 @@ No fee/FX rules hardcoded in the client. Prevents exposure of sensitive pricing 
 ## FX Tooltip Text
 - "Includes an exchange markup" (transparent approach)
 
+## Fee Model
+- **Local** (same-currency bank transfer): Flat fee ($1.50 USD/EUR/GBP, free for exotic currencies)
+- **Non-local** (cross-currency): Percentage fee (1–4% region-dependent) with min/max clamps
+- **Volume hint**: Animated banner when send amount > $10,000 USD equivalent ("You may qualify for lower fees")
+- **Same-currency UI**: FX breakdown hidden entirely; simplified fee display
+
 ## Risks / Tradeoffs
 - If real Payoneer pricing varies by contract/segment, the widget must stay clearly **indicative** to avoid misleading expectations
 - Pricing engine is config-driven for now; DB-backed rules engine planned for scale
+- Accuracy target: ±2–5% variance from actual Payoneer pricing is acceptable
 
