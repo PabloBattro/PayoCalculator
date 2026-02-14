@@ -54,7 +54,34 @@ function AmountInput({
   );
 }
 
-/** Skeleton for loading state */
+/** Rate freshness timestamp — matches internal FX widget's "Last updated: 12:30 PM" */
+function RateTimestamp({ iso }: { iso: string }) {
+  const date = new Date(iso);
+  const now = Date.now();
+  const diffMin = Math.round((now - date.getTime()) / 60_000);
+
+  let label: string;
+  if (diffMin < 1) {
+    label = 'just now';
+  } else if (diffMin < 60) {
+    label = `${diffMin} min ago`;
+  } else {
+    // Show absolute time: "12:30 PM"
+    label = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 text-[10px] text-gray-400 pt-1">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="shrink-0">
+        <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1" />
+        <path d="M5 3v2.5l1.5 1" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      Rate updated {label}
+    </div>
+  );
+}
+
+/** Skeleton for loading state — friendly copy below bars, like the internal FX widget */
 function QuoteSkeleton() {
   return (
     <div className="px-5 py-3 space-y-3 animate-pulse">
@@ -70,6 +97,7 @@ function QuoteSkeleton() {
         <div className="h-4 w-16 rounded bg-gray-200" />
         <div className="h-4 w-24 rounded bg-gray-200" />
       </div>
+      <p className="text-xs text-gray-400 text-center pt-1">Calculating your quote...</p>
     </div>
   );
 }
@@ -225,6 +253,11 @@ function FxBreakdown({
           </span>
         </span>
       </div>
+
+      {/* Rate freshness — matches internal FX widget's "Last updated: 12:30 PM" */}
+      {quote.rateUpdatedAt && (
+        <RateTimestamp iso={quote.rateUpdatedAt} />
+      )}
     </div>
   );
 }
@@ -347,7 +380,8 @@ export default function QuoteWidget() {
       </div>
 
       {/* Card */}
-      <div className="rounded-2xl bg-white shadow-2xl shadow-black/8 border border-gray-100/80 overflow-visible">
+      {/* Card — 20px radius to match internal FX widget */}
+      <div className="rounded-[20px] bg-white shadow-2xl shadow-black/8 border border-gray-100/80 overflow-visible">
         {/* -------- YOU SEND -------- */}
         <div className="p-5 pb-4">
           <label className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
@@ -492,12 +526,12 @@ export default function QuoteWidget() {
               <span className="text-sm">{quote.etaLabel}</span>
             </div>
 
-            {/* CTA — soft conversion, not hard-sell */}
+            {/* CTA — proportions matched to internal FX widget's "Convert currencies" button */}
             <a
               href="https://www.payoneer.com/signup/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center w-full rounded-xl bg-brand-coral px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg hover:shadow-brand-coral/20 active:scale-[0.98]"
+              className="flex items-center justify-center w-full rounded-2xl bg-brand-coral px-4 py-3.5 text-[15px] font-semibold text-white transition-all hover:bg-brand-coral/90 hover:shadow-lg hover:shadow-brand-coral/20 active:scale-[0.98]"
             >
               Get started — it&apos;s free
             </a>

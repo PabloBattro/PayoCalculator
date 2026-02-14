@@ -166,7 +166,7 @@ async function calculateNonLocalQuote(
   const rateResult = await getLiveMidMarketRate(sendCurrency, receiveCurrency);
   if (!rateResult) return null; // unknown currency pair
 
-  const { rate: midRate, stale: rateStale } = rateResult;
+  const { rate: midRate, stale: rateStale, fetchedAt } = rateResult;
 
   // Apply FX markup: customer rate is worse than mid by the markup %
   const exchangeRate = midRate * (1 - rule.fxMarkupPercent / 100);
@@ -227,6 +227,8 @@ async function calculateNonLocalQuote(
     method,
     isLocalTransfer: false,
     volumeHint: checkVolumeHint(sendAmount, sendCurrency),
+    // Rate freshness metadata — used by UI to show "Last updated" timestamp
+    ...(fetchedAt > 0 && { rateUpdatedAt: new Date(fetchedAt).toISOString() }),
     ...(rateStale && {
       rateStale: true,
       rateDisclaimer: 'Exchange rates may be delayed. Shown rates are approximate.',

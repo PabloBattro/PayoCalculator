@@ -56,7 +56,7 @@ export default function MethodSelector({ value, onChange }: Props) {
           key={m.id}
           onClick={() => m.enabled && onChange(m.id)}
           disabled={!m.enabled}
-          className={`relative flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all cursor-pointer ${
+          className={`relative flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-medium transition-all cursor-pointer ${
             m.id === value
               ? 'bg-brand-coral/10 text-brand-coral border border-brand-coral/20'
               : m.enabled
@@ -68,7 +68,7 @@ export default function MethodSelector({ value, onChange }: Props) {
           {m.id === value && (
             <motion.div
               layoutId="method-bg"
-              className="absolute inset-0 rounded-lg bg-brand-coral/10 border border-brand-coral/20"
+              className="absolute inset-0 rounded-xl bg-brand-coral/10 border border-brand-coral/20"
               transition={{ duration: 0.2 }}
             />
           )}

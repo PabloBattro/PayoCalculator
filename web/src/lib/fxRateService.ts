@@ -96,14 +96,14 @@ export async function getLatestRates(): Promise<FxRateResult> {
 export async function getLiveMidMarketRate(
   from: string,
   to: string,
-): Promise<{ rate: number; stale: boolean } | null> {
+): Promise<{ rate: number; stale: boolean; fetchedAt: number } | null> {
   const { rates, stale } = await getLatestRates();
 
   const f = rates[from];
   const t = rates[to];
   if (!f || !t) return null;
 
-  return { rate: t / f, stale };
+  return { rate: t / f, stale, fetchedAt: cache.fetchedAt };
 }
 
 // ---------------------------------------------------------------------------

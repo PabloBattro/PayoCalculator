@@ -46,6 +46,8 @@ export interface QuoteResponse {
   rateDisclaimer?: string;
   /** Shown when send amount exceeds volume discount threshold */
   volumeHint?: VolumeHint;
+  /** ISO timestamp of when the FX rate was last fetched (non-local only) */
+  rateUpdatedAt?: string;
 }
 
 /** Currency metadata */
