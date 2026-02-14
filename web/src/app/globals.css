@@ -6,6 +6,7 @@
   --brand-coral: #FF6B4A;
   --brand-ocean: #0070FF;
   --brand-dark: #252526;
+  --brand-gray: #6B7280;
 }
 
 @theme inline {
@@ -14,6 +15,7 @@
   --color-brand-coral: var(--brand-coral);
   --color-brand-ocean: var(--brand-ocean);
   --color-brand-dark: var(--brand-dark);
+  --color-brand-gray: var(--brand-gray);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -34,4 +36,25 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Custom scrollbar for dropdowns */
+.max-h-60::-webkit-scrollbar {
+  width: 4px;
+}
+.max-h-60::-webkit-scrollbar-track {
+  background: transparent;
+}
+.max-h-60::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+.max-h-60::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(255, 107, 74, 0.15);
+  color: inherit;
 }
