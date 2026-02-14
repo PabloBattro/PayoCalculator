@@ -41,14 +41,21 @@
 - **Styling**: Tailwind CSS 4
 - **Animations**: Framer Motion
 - **Responsibilities**:
-  - Render amount inputs, currency selectors, fee breakdown, ETA, disclaimers
+  - Render amount inputs (formatted with thousand separators), currency selectors, fee breakdown, ETA, disclaimers
   - Debounce user input → call `/api/quote`
-  - Display loading skeletons during API call
+  - Display loading skeletons + "Calculating your quote…" message during API call
   - Support "You send" / "Recipient gets" toggle
   - Hide FX breakdown section for same-currency (local) transfers
   - Show animated volume discount banner when applicable
   - Show stale-rate indicator when FX cache is outdated
+  - Show "Rate updated X min ago" timestamp near exchange rate
+  - Render CTA button ("Get started — it's free") after quote result
   - No pricing logic — only presentation
+- **Design tokens**:
+  - Violet gradient for CTA buttons (`--brand-violet-from: #7C6AFF` → `--brand-violet-to: #5B47E0`)
+  - Coral for decorative accents (badge, loading bar, active tab)
+  - Card radius 20px, currency selectors as pill shape with circular flag images
+  - Flags via flagcdn.com (`https://flagcdn.com/w80/{countryCode}.png`) — no emoji
 
 ### 2. Quote API (Backend)
 - **Route**: `POST /api/quote`
@@ -158,11 +165,11 @@ web/
 │   │       └── quote/
 │   │           └── route.ts      # POST /api/quote handler
 │   ├── components/
-│   │   ├── QuoteWidget.tsx       # Main widget (inputs, breakdown, ETA, disclaimers)
-│   │   ├── CurrencyDropdown.tsx  # Searchable dropdown with emoji flags
+│   │   ├── QuoteWidget.tsx       # Main widget (inputs, breakdown, ETA, CTA, disclaimers)
+│   │   ├── CurrencyDropdown.tsx  # Searchable dropdown with flagcdn.com flag images
 │   │   └── MethodSelector.tsx    # Transfer method tabs
 │   ├── config/
-│   │   ├── currencies.ts         # Currency list + metadata (10 currencies)
+│   │   ├── currencies.ts         # Currency list + metadata + countryCode for flags (10 currencies)
 │   │   └── pricing.ts            # Fee rules, FX markups, ETAs, local fees, thresholds
 │   ├── lib/
 │   │   ├── quoteEngine.ts        # Core pricing calculation (local + non-local paths)
