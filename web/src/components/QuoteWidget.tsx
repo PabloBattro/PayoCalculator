@@ -54,7 +54,7 @@ function AmountInput({
   );
 }
 
-// Skeleton for loading state
+/** Skeleton for loading state */
 function QuoteSkeleton() {
   return (
     <div className="px-5 py-3 space-y-3 animate-pulse">
@@ -69,6 +69,187 @@ function QuoteSkeleton() {
       <div className="flex justify-between">
         <div className="h-4 w-16 rounded bg-gray-200" />
         <div className="h-4 w-24 rounded bg-gray-200" />
+      </div>
+    </div>
+  );
+}
+
+/** Animated volume discount banner — Wise-style slide-in */
+function VolumeHintBanner({ message }: { message: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0, marginTop: 0 }}
+      animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+      exit={{ opacity: 0, height: 0, marginTop: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      className="overflow-hidden"
+    >
+      <div className="flex items-center gap-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/60 rounded-xl px-3.5 py-2.5">
+        <span className="text-emerald-600 shrink-0">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13z" stroke="currentColor" strokeWidth="1.2" />
+            <path d="M6 8l1.5 1.5L10 6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+        <span className="text-xs text-emerald-800 font-medium leading-snug">{message}</span>
+      </div>
+    </motion.div>
+  );
+}
+
+/** Subtle stale-rate indicator */
+function StaleRateIndicator() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex items-center gap-1.5 text-[10px] text-amber-600 px-5 pb-1"
+    >
+      <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400" />
+      Exchange rates may be delayed
+    </motion.div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Fee breakdown for non-local (cross-currency) transfers
+// ---------------------------------------------------------------------------
+
+function FxBreakdown({
+  quote,
+  showFees,
+  setShowFees,
+  sendCfg,
+  sendCurrency,
+}: {
+  quote: QuoteResponse;
+  showFees: boolean;
+  setShowFees: (v: boolean) => void;
+  sendCfg: CurrencyConfig;
+  sendCurrency: string;
+}) {
+  return (
+    <div className="px-5 py-3.5 space-y-2.5 text-sm">
+      {/* Fee row */}
+      <button
+        onClick={() => setShowFees(!showFees)}
+        className="flex w-full items-center justify-between text-gray-600 hover:text-gray-900 transition-colors"
+        type="button"
+      >
+        <span className="flex items-center gap-2">
+          <span className="w-4 text-center text-gray-300 font-light">−</span>
+          <span className="font-medium">
+            {sendCfg.symbol}
+            {fmt(quote.fee, sendCfg)}
+          </span>
+        </span>
+        <span className="flex items-center gap-1.5 text-gray-500">
+          <span className="text-xs">{quote.feeLabel}</span>
+          <motion.svg
+            animate={{ rotate: showFees ? 180 : 0 }}
+            transition={{ duration: 0.15 }}
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+          >
+            <path
+              d="M3 4.5L6 7.5L9 4.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </motion.svg>
+        </span>
+      </button>
+
+      {/* Expandable fee details */}
+      <AnimatePresence>
+        {showFees && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.15 }}
+            className="overflow-hidden"
+          >
+            <div className="ml-6 pl-3 border-l-2 border-gray-200 text-xs text-gray-500 space-y-1.5 pb-1">
+              <div className="flex justify-between">
+                <span>Transfer fee</span>
+                <span className="font-mono">
+                  {sendCfg.symbol}
+                  {fmt(quote.fee, sendCfg)} {sendCurrency}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>FX markup included</span>
+                <span className="font-mono">
+                  ~{((1 - quote.exchangeRate / quote.midMarketRate) * 100).toFixed(2)}%
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Amount to convert */}
+      <div className="flex items-center justify-between text-gray-600">
+        <span className="flex items-center gap-2">
+          <span className="w-4 text-center text-gray-300 font-light">=</span>
+          <span className="font-medium">
+            {sendCfg.symbol}
+            {fmt(quote.amountToConvert, sendCfg)}
+          </span>
+        </span>
+        <span className="text-xs text-gray-500">Amount you&apos;ll convert</span>
+      </div>
+
+      {/* Exchange rate */}
+      <div className="flex items-center justify-between text-gray-600">
+        <span className="flex items-center gap-2">
+          <span className="w-4 text-center text-gray-300 font-light">×</span>
+          <span className="font-medium font-mono">
+            {quote.exchangeRate.toFixed(4)}
+          </span>
+        </span>
+        <span className="flex items-center gap-1.5 text-xs text-gray-500">
+          Exchange rate
+          <span
+            className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gray-200 text-[9px] font-bold text-gray-500 cursor-help"
+            title={`Mid-market rate: ${quote.midMarketRate.toFixed(4)}`}
+          >
+            ?
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Fee breakdown for local (same-currency) transfers — simplified
+// ---------------------------------------------------------------------------
+
+function LocalBreakdown({
+  quote,
+  sendCfg,
+}: {
+  quote: QuoteResponse;
+  sendCfg: CurrencyConfig;
+}) {
+  return (
+    <div className="px-5 py-3.5 text-sm">
+      <div className="flex items-center justify-between text-gray-600">
+        <span className="flex items-center gap-2">
+          <span className="w-4 text-center text-gray-300 font-light">−</span>
+          <span className="font-medium">
+            {quote.fee > 0
+              ? `${sendCfg.symbol}${fmt(quote.fee, sendCfg)}`
+              : 'Free'}
+          </span>
+        </span>
+        <span className="text-xs text-gray-500">{quote.feeLabel}</span>
       </div>
     </div>
   );
@@ -93,7 +274,7 @@ export default function QuoteWidget() {
   const amount = direction === 'send' ? parseFloat(sendInput) : parseFloat(receiveInput);
 
   const fetchQuote = useCallback(async () => {
-    if (!amount || amount <= 0 || sendCurrency === receiveCurrency) {
+    if (!amount || amount <= 0) {
       setQuote(null);
       return;
     }
@@ -179,7 +360,7 @@ export default function QuoteWidget() {
             <CurrencyDropdown
               value={sendCurrency}
               onChange={setSendCurrency}
-              exclude={receiveCurrency}
+              exclude={undefined}
             />
           </div>
         </div>
@@ -216,107 +397,27 @@ export default function QuoteWidget() {
               </motion.div>
             ) : quote ? (
               <motion.div
-                key="quote"
+                key={quote.isLocalTransfer ? 'local' : 'fx'}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className="px-5 py-3.5 space-y-2.5 text-sm">
-                  {/* Fee row */}
-                  <button
-                    onClick={() => setShowFees(!showFees)}
-                    className="flex w-full items-center justify-between text-gray-600 hover:text-gray-900 transition-colors"
-                    type="button"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 text-center text-gray-300 font-light">−</span>
-                      <span className="font-medium">
-                        {sendCfg.symbol}
-                        {fmt(quote.fee, sendCfg)}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-1.5 text-gray-500">
-                      <span className="text-xs">{quote.feeLabel}</span>
-                      <motion.svg
-                        animate={{ rotate: showFees ? 180 : 0 }}
-                        transition={{ duration: 0.15 }}
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                      >
-                        <path
-                          d="M3 4.5L6 7.5L9 4.5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </motion.svg>
-                    </span>
-                  </button>
+                {/* Conditionally render local vs FX breakdown */}
+                {quote.isLocalTransfer ? (
+                  <LocalBreakdown quote={quote} sendCfg={sendCfg} />
+                ) : (
+                  <FxBreakdown
+                    quote={quote}
+                    showFees={showFees}
+                    setShowFees={setShowFees}
+                    sendCfg={sendCfg}
+                    sendCurrency={sendCurrency}
+                  />
+                )}
 
-                  {/* Expandable fee details */}
-                  <AnimatePresence>
-                    {showFees && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="ml-6 pl-3 border-l-2 border-gray-200 text-xs text-gray-500 space-y-1.5 pb-1">
-                          <div className="flex justify-between">
-                            <span>Transfer fee</span>
-                            <span className="font-mono">
-                              {sendCfg.symbol}
-                              {fmt(quote.fee, sendCfg)} {sendCurrency}
-                            </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>FX markup included</span>
-                            <span className="font-mono">
-                              ~{((1 - quote.exchangeRate / quote.midMarketRate) * 100).toFixed(2)}%
-                            </span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Amount to convert */}
-                  <div className="flex items-center justify-between text-gray-600">
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 text-center text-gray-300 font-light">=</span>
-                      <span className="font-medium">
-                        {sendCfg.symbol}
-                        {fmt(quote.amountToConvert, sendCfg)}
-                      </span>
-                    </span>
-                    <span className="text-xs text-gray-500">Amount you&apos;ll convert</span>
-                  </div>
-
-                  {/* Exchange rate */}
-                  <div className="flex items-center justify-between text-gray-600">
-                    <span className="flex items-center gap-2">
-                      <span className="w-4 text-center text-gray-300 font-light">×</span>
-                      <span className="font-medium font-mono">
-                        {quote.exchangeRate.toFixed(4)}
-                      </span>
-                    </span>
-                    <span className="flex items-center gap-1.5 text-xs text-gray-500">
-                      Exchange rate
-                      <span
-                        className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gray-200 text-[9px] font-bold text-gray-500 cursor-help"
-                        title={`Mid-market rate: ${quote.midMarketRate.toFixed(4)}`}
-                      >
-                        ?
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                {/* Stale rate indicator */}
+                {quote.rateStale && !quote.isLocalTransfer && <StaleRateIndicator />}
               </motion.div>
             ) : (
               /* Empty state — no quote yet */
@@ -354,13 +455,13 @@ export default function QuoteWidget() {
             <CurrencyDropdown
               value={receiveCurrency}
               onChange={setReceiveCurrency}
-              exclude={sendCurrency}
+              exclude={undefined}
             />
           </div>
         </div>
       </div>
 
-      {/* -------- ETA + DISCLAIMERS -------- */}
+      {/* -------- VOLUME HINT + ETA + DISCLAIMERS -------- */}
       <AnimatePresence>
         {quote && (
           <motion.div
@@ -370,6 +471,13 @@ export default function QuoteWidget() {
             transition={{ duration: 0.25, delay: 0.05 }}
             className="mt-4 space-y-3"
           >
+            {/* Volume discount hint */}
+            <AnimatePresence>
+              {quote.volumeHint && (
+                <VolumeHintBanner message={quote.volumeHint.message} />
+              )}
+            </AnimatePresence>
+
             {/* ETA */}
             <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/60 backdrop-blur-sm rounded-lg px-3 py-2 border border-gray-100">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-brand-coral shrink-0">
@@ -386,6 +494,12 @@ export default function QuoteWidget() {
                   {d}
                 </p>
               ))}
+              {/* Stale rate disclaimer — shown alongside other disclaimers */}
+              {quote.rateDisclaimer && (
+                <p className="text-[11px] text-amber-500 leading-relaxed font-medium">
+                  {quote.rateDisclaimer}
+                </p>
+              )}
             </div>
           </motion.div>
         )}

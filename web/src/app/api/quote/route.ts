@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { QuoteRequest } from '@/types/quote';
 import { calculateQuote } from '@/lib/quoteEngine';
 import { getCurrency } from '@/config/currencies';
+import { isLocalCorridor, getLocalFee } from '@/config/pricing';
 
 const VALID_DIRECTIONS = new Set(['send', 'receive']);
 const VALID_METHODS = new Set(['bank_transfer']);
@@ -40,17 +41,27 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    if (sendCurrency === receiveCurrency) {
-      return NextResponse.json({ error: 'Send and receive currencies must be different' }, { status: 400 });
-    }
+    // Same-currency is now allowed (local transfer with flat fee, no FX)
     if (!getCurrency(sendCurrency) || !getCurrency(receiveCurrency)) {
       return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 });
     }
 
+    // Local transfers: amount must cover the flat fee to avoid negative receiveAmount
+    if (isLocalCorridor(sendCurrency, receiveCurrency)) {
+      const localFee = getLocalFee(sendCurrency);
+      if (localFee > 0 && amount <= localFee) {
+        const symbol = getCurrency(sendCurrency)?.symbol ?? '';
+        return NextResponse.json(
+          { error: `Minimum send amount is ${symbol}${(localFee + 0.01).toFixed(2)} for same-currency transfers` },
+          { status: 400 },
+        );
+      }
+    }
+
     const resolvedMethod = VALID_METHODS.has(method) ? method : 'bank_transfer';
 
-    // --- Calculate ---
-    const quote = calculateQuote({
+    // --- Calculate (async — may fetch live FX rates) ---
+    const quote = await calculateQuote({
       sendCurrency,
       receiveCurrency,
       amount,
@@ -71,4 +82,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to calculate quote' }, { status: 500 });
   }
 }
-
