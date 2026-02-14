@@ -1,0 +1,49 @@
+# dependencies
+node_modules/
+
+# next.js
+web/.next/
+web/out/
+
+# production
+web/build/
+
+# misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+!.vscode/settings.json
+*.swp
+*.swo
+
+# macOS junk from extracted zips
+**/__MACOSX/
+
+# Original zip downloads (extracted into brand-assets/)
+*.zip
+
+# Downloaded web pages
+*.aspx
+
+# Large guidelines PDF (too big for git; keep locally)
+Payo-Brand-Guidelines---Update-v1.0.pdf
+

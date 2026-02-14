@@ -1,0 +1,78 @@
+---
+alwaysApply: false
+---
+
+# Design Peer Review
+
+Critically evaluate feedback from a senior UI/Front-End designer.
+
+A senior designer has reviewed the current UI/UX implementation and provided feedback below. Important context:
+
+- They have less context than you on product constraints, technical limitations, roadmap priorities, and business tradeoffs
+- You are the product/design lead — do not accept suggestions at face value
+- Your job is to evaluate each suggestion strategically, not emotionally
+
+Feedback from designer:
+
+[PASTE DESIGN FEEDBACK HERE]
+
+---
+
+For EACH feedback item above:
+
+### Verify the issue/opportunity exists
+- Is the problem real in the current UI?
+- Is it measurable (usability, clarity, hierarchy, accessibility, consistency)?
+- Or is it subjective taste?
+
+### Assess alignment with product goals
+- Does this suggestion support the current objective of this page/flow?
+- Does it improve clarity, conversion, trust, or usability?
+- Or does it optimize aesthetics at the cost of focus?
+
+### Evaluate constraints
+- Technical complexity (low / medium / high)
+- Impact on design system consistency
+- Impact on performance
+- Risk of scope creep
+
+### Classify the feedback
+- ✅ Valid & High Impact
+- ⚖️ Valid but Low Priority
+- 🤔 Subjective / Preference-Based
+- ❌ Misaligned with current goals
+
+### If valid
+- Describe the minimal effective change (not a redesign)
+- Define expected outcome (what improves?)
+- Add to improvement backlog with priority level
+
+### If not valid
+- Clearly explain why
+- Reference product rationale, system constraints, or user goals
+
+---
+
+After evaluating all items, provide:
+
+**1️⃣ Confirmed Improvements (Actionable & Aligned)**
+- List only high-confidence improvements
+- Include impact level (UX clarity, trust, conversion, polish, etc.)
+
+**2️⃣ Deprioritized or Context-Dependent Suggestions**
+- Valid ideas but not urgent
+- Explain tradeoffs
+
+**3️⃣ Rejected Suggestions (With Rationale)**
+- Clearly explain why they are not appropriate now
+
+**4️⃣ Prioritized Action Plan**
+- Quick wins (≤ 1h)
+- Medium improvements (1–3h)
+- Structural improvements (larger refactors)
+
+---
+
+If feedback is vague, request clarification before acting.
+
+**Do not redesign blindly. Optimize intentionally.**

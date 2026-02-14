@@ -1,0 +1,41 @@
+---
+alwaysApply: false
+description: "Generate Excalidraw-safe Mermaid flowcharts with country boxes + goods vs money + legend"
+---
+
+# Excalidraw Mermaid Flow
+
+Create **Mermaid flowchart** code that the user will paste into **Excalidraw → Text to diagram → Mermaid**.
+
+## Non-negotiable output rules (Excalidraw-safe)
+- Output **PLAIN TEXT ONLY** (no triple backticks, no markdown fences).
+- Start with `flowchart TD` unless user asks for `LR`.
+- Use node labels with quotes: `ID["Label"]`.
+  - Avoid parentheses `()` in labels.
+  - Keep labels short.
+- Do **not** use edge labels unless the user explicitly asks.
+- Produce **ONE diagram per use case**.
+
+## Visual conventions (baked in)
+- **Country boxes**: group nodes in `subgraph` by country/region (e.g., China, Brazil) and make the subgraph borders **dotted**:
+  - `style CNBOX fill:transparent,stroke:#777,stroke-dasharray: 6 4`
+- **Goods flow**: solid arrows `-->`
+- **Money flow**: dotted arrows `-.->`
+- Include a **Legend** in every diagram using:
+  - `G1["Goods flow"] --> G2["Goods destination"]`
+  - `M1["Money flow"] -.-> M2["Money destination"]`
+  - Put the legend in `subgraph LEG["Legend"] ... end` with dotted border:
+    - `style LEG fill:transparent,stroke:#bbb,stroke-dasharray: 4 4`
+
+## What you should ask the user for (minimal)
+If missing, ask concise questions to get:
+- Use case names (e.g., Case 1/2/3)
+- Countries/regions involved
+- Entities per country (Seller, BR entity, distributor, marketplace, warehouse, buyer, taxes)
+- Which arrows are **goods** vs **money**
+
+## What you return
+For each use case:
+1) A single title line: `Use case X — <name>`
+2) The Mermaid code (plain text) immediately below it
+

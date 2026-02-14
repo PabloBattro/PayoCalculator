@@ -1,0 +1,81 @@
+---
+alwaysApply: false
+---
+
+# Design Review
+
+Perform a comprehensive UI/UX review of the provided screens. Be thorough but concise.
+
+**Goal:** improve perceived product maturity without changing brand look & feel (palette, tone, general style).
+
+## Check For
+
+- **Visual Hierarchy** — Clear primary/secondary/tertiary emphasis, scanning works, headlines/supporting text balanced
+- **Typography** — Consistent scale, weights, line-height, readable line length, no “everything same weight”
+- **Spacing & Rhythm** — Consistent paddings/margins, vertical rhythm, alignment, grid discipline
+- **Color Semantics** — Colors match meaning (error vs warning vs info), no “error red” used for advisory content, accessible contrast
+- **Component Consistency** — Buttons/inputs/cards/badges/callouts share rules (radius, border, shadow, states)
+- **States & Feedback** — Hover/focus/active/disabled/loading states present and consistent; no ambiguous states
+- **Content Clarity** — Copy supports the UI, labels precise, numbers have context, no placeholder-ish phrasing
+- **Navigation & IA** — Page sections ordered logically, clear “what next”, no dead-end scrolling
+- **Conversion Readiness** — CTA placement/clarity, progressive disclosure, removes hesitation, trust cues
+- **Accessibility** — Keyboard focus visible, contrast OK, tap targets, semantic warnings, reduced reliance on color only
+- **Responsiveness** — Layout holds on common breakpoints, no awkward wrapping, density appropriate
+- **Performance Perception** — Avoids heavy effects, over-blur, jank-prone shadows, image quality acceptable
+- **Design System Fit** — Follows existing patterns/tokens; no one-off styling unless justified
+
+## Inputs
+
+- **Screenshots / URL**: [PASTE HERE]
+- **Target user persona**: [Seller / Service Provider / etc.]
+- **Primary goal of the page**: [e.g., educate + drive to partner exploration]
+- **Constraints**: keep palette, keep style, avoid redesigns
+
+## Output Format
+
+### ✅ Looks Good
+
+[Item 1]
+
+[Item 2]
+
+### ⚠️ Issues Found
+
+[Severity] [Section/Component] - [Issue description]
+
+Fix: [Minimal effective fix]
+
+Why: [1–2 lines on impact: clarity/trust/conversion/accessibility]
+
+### 📊 Summary
+
+Screens reviewed: X
+
+Critical issues: X
+
+High issues: X
+
+Medium issues: X
+
+Low issues: X
+
+Top 3 changes that would most elevate perceived quality:
+
+…
+
+…
+
+…
+
+## Severity Levels
+
+- **CRITICAL** — Misleading semantics, accessibility blockers, broken navigation, severe readability issues
+- **HIGH** — Bad UX, trust-killers, confusing hierarchy, error/warning misuse, conversion friction
+- **MEDIUM** — Consistency gaps, layout rhythm issues, missing states, minor clarity problems
+- **LOW** — Cosmetic polish, micro-alignment, small copy tweaks
+
+## Rules
+
+- Don’t propose a full redesign unless necessary — prefer minimal effective changes.
+- If feedback is subjective, label it explicitly as **Preference** and still propose a measurable rationale (or skip it).
+- Keep suggestions implementable: aim for fixes that a FE dev can apply quickly (tokens, spacing, component variants).
