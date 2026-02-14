@@ -48,11 +48,14 @@ function formatEta(etaDays: { min: number; max: number }): { eta: string; etaLab
 // Main
 // ---------------------------------------------------------------------------
 
-export function calculateQuote(req: QuoteRequest): QuoteResponse {
+export function calculateQuote(req: QuoteRequest): QuoteResponse | null {
   const { sendCurrency, receiveCurrency, amount, direction, method } = req;
 
   const rule = getPricingRule(sendCurrency, receiveCurrency);
   const midRate = getMidMarketRate(sendCurrency, receiveCurrency);
+
+  // If rate data is missing for this corridor, return null so the API can 400 gracefully
+  if (midRate === null) return null;
 
   // Apply FX markup: the customer rate is worse than mid by the markup %
   const exchangeRate = midRate * (1 - rule.fxMarkupPercent / 100);

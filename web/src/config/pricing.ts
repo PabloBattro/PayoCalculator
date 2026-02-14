@@ -70,11 +70,15 @@ export function getPricingRule(from: string, to: string): PricingRule {
   };
 }
 
-/** Get the mid-market exchange rate from → to (units of `to` per 1 unit of `from`). */
-export function getMidMarketRate(from: string, to: string): number {
+/**
+ * Get the mid-market exchange rate from → to (units of `to` per 1 unit of `from`).
+ * Returns `null` instead of throwing when a currency is missing from the rate table,
+ * so the API route can return a clean 400 instead of a 500.
+ */
+export function getMidMarketRate(from: string, to: string): number | null {
   const f = midMarketRates[from];
   const t = midMarketRates[to];
-  if (!f || !t) throw new Error(`Unknown currency: ${from} or ${to}`);
+  if (!f || !t) return null;
   return t / f;
 }
 

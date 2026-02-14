@@ -38,12 +38,16 @@ export default function CurrencyDropdown({ value, onChange, exclude }: Props) {
   }, []);
 
   useEffect(() => {
+    let focusTimer: ReturnType<typeof setTimeout>;
     if (open) {
       document.addEventListener('mousedown', handleClickOutside);
       // Focus search input when dropdown opens
-      setTimeout(() => inputRef.current?.focus(), 50);
+      focusTimer = setTimeout(() => inputRef.current?.focus(), 50);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [open, handleClickOutside]);
 
   const handleSelect = (c: CurrencyConfig) => {
